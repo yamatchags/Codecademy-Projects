@@ -56,12 +56,21 @@ class Player:
   def __init__(self,name,hp):
     self.name = name
     self.hp = hp
+    self.win = 0
+    self.lost = 0
+    self.power_actions = False
+    self.desperate_actions = False
+  
+  def __add__(self,value):
+    self.win += value
+
+  def __sub__(self,value):
+    self.lost += value
 
 class Bot(Player):
 
   def __init__(self,name,hp):
     super().__init__(name,hp)
-
 
 rock = Choose("rock","scissors","paper","a ")
 paper = Choose("paper","rock","scissors","a ")
@@ -114,7 +123,22 @@ def game():
            )
   return result
 
-print(game())
+
+hazim = Player("Hazim",10)
+print(hazim.name)
+print(hazim.hp)
+print(hazim.win)
+print(hazim.lost)
+print(hazim.power_actions)
+print(hazim.desperate_actions)
+
+hazim + 1
+print(hazim.win)
+print(hazim.lost)
+
+hazim - 1
+print(hazim.win)
+print(hazim.lost)
 
   
 
