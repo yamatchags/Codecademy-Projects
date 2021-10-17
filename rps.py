@@ -45,4 +45,18 @@ import random
 
 choose = ["rock", "paper", "scissors"]
 
-print(random.choice(choose))
+
+# Classes
+class Player():
+
+    def __init__(self,hp):
+      self.hp = hp
+
+    def chosen(self,choose):
+      self.choose = choose
+
+# Create players
+
+player = Player(10)
+print(player.hp)
+
