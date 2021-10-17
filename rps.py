@@ -51,6 +51,18 @@ class Choose:
     self.lose = lose
     self.article = article
 
+class Player:
+
+  def __init__(self,name,hp):
+    self.name = name
+    self.hp = hp
+
+class Bot(Player):
+
+  def __init__(self,name,hp):
+    super().__init__(name,hp)
+
+
 rock = Choose("rock","scissors","paper","a ")
 paper = Choose("paper","rock","scissors","a ")
 scissors = Choose("scissors","paper","rock")
@@ -103,41 +115,7 @@ def game():
   return result
 
 print(game())
-  
 
-
-
-  # player_win = None
-  # player_article = None
-  # ai_article = None
-  # result = ""
-
-  # if player == "rock":
-  #   if ai == "scissors":
-  #     player_score += 1
-  #     player_win = True
-  #   else:
-  #     ai_score += 1
-  # elif player == "paper":
-  #   if ai == "rock":
-  #     player_score += 1
-  #     player_win = True
-  #   else:
-  #     ai_score += 1
-  # elif player == "scissors"
-  #   if ai == "paper":
-  #     player_score += 1
-  #     player_win = True
-  #   else:
-  #     ai_score += 1
-  
-  # result = "You threw {} {} while AI threw {} {}".format()
-
-  # if player_win = True:
-  #   result = "You "
-
-
-  # return player_score, ai_score
   
 
 
