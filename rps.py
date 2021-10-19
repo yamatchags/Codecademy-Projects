@@ -38,10 +38,15 @@ You and your opponent starts with 5 HP.
 '''
 
 #######################################
-#               MODULES               #
+#              MODULES                #
 #######################################
 
 import random
+
+
+#######################################
+#              CLASSES                #
+#######################################
 
 class Choose:
 
@@ -53,11 +58,12 @@ class Choose:
 
 class Player:
 
-  def __init__(self,name,hp):
+  def __init__(self,name,hp=10):
     self.name = name
     self.hp = hp
     self.win = 0
     self.lost = 0
+    self.stage = 0
     self.power_actions = False
     self.desperate_actions = False
   
@@ -67,10 +73,35 @@ class Player:
   def __sub__(self,value):
     self.lost += value
 
+  # The history contains all information about what the player had picked.
+  # For choose history, 0 : [0,1,0] means that the player has battled 3 
+  # different contenders, where player had picked 2 rocks, and 1 paper for 
+  # the starting choice.
+  # For action history, 0: [0,1,0] means that the player didn't win the first 
+  # round for the first and third battle. However, the player won the first 
+  # round in the second battle, and has chosen strike for the first action.
+  # def choose_history(self,choose):
+  #   self.choose = choose
+  #   choose_history
+  #   return choose_history
+
+  # def action_history(self,action):
+  #   self.action = action
+
+  #   return action_history
+
+
+
+
 class Bot(Player):
 
-  def __init__(self,name,hp):
+  def __init__(self,name,hp=10):
     super().__init__(name,hp)
+
+
+#######################################
+#            INITIALIZE               #
+#######################################
 
 rock = Choose("rock","scissors","paper","a ")
 paper = Choose("paper","rock","scissors","a ")
@@ -78,6 +109,17 @@ scissors = Choose("scissors","paper","rock")
 
 # Simple rock, paper, scissors game
 choose = ["rock", "paper", "scissors"]
+action = ["strike", "heal", "guard", "sabotage"]
+# choose_history = {}
+# action_history = {}
+
+#######################################
+#                GAME                 #
+#######################################
+
+def player_name():
+  player_name = input("What is your name? (40 characters max): \n")
+  return player_name
 
 def instruction():
   det = "Please choose one of the following (enter the option number): \n"
@@ -90,7 +132,7 @@ def instruction():
 
 def player_choose():
   player_choose = int(input(instruction()))
-  player_choose = choose[player_choose]
+  player_choose = choose[player_choose-1]
   return player_choose
 
 def ai_choose():
@@ -98,52 +140,75 @@ def ai_choose():
   return ai_choose
 
 def game():
-  player_choice = player_choose()
-  ai_choice = ai_choose()
+  # global choose_history
+  # global action_history
+  player_stage = player.stage
+  player_hp = player.hp
+  
+  if player.stage == 0:
+    ai_hp = emily.hp
+    ai_name = emily.name
+  elif player.stage == 1:
+    ai_hp = leo.hp
+    ai_name = leo.name
+  elif player.stage == 2:
+    ai_hp = blitz.hp
+    ai_name = blitz.name
+  else:
+    ai_hp = sayaka.hp
+    ai_name = sayaka.name
+
   player_score = 0
   ai_score = 0
-  player_result = ""
 
-  if eval(player_choice).win == ai_choice:
-    player_score += 1
-    player_result = "You won!"
-  elif eval(player_choice).lose == ai_choice:
-    ai_score += 1
-    player_result = "You lost!"
-  else:
-    player_result = "It's a tie!"
+  while player_hp > 0 and ai_hp > 0:
+    player_choice = player_choose()
+    ai_choice = ai_choose()
+    player_result = ""
+    game_round = 0
 
-  player_article = eval(player_choice).article
-  ai_article = eval(ai_choice).article
-  player_choice_name = eval(player_choice).name
-  ai_choice_name = eval(ai_choice).name
+    if eval(player_choice).win == ai_choice:
+      player_score += 1
+      ai_hp -= 1
+      player_result = "You won!"
+    elif eval(player_choice).lose == ai_choice:
+      ai_score += 1
+      player_hp -= 1
+      player_result = "You lost!"
+    else:
+      player_result = "It's a tie!"
+    game_round += 1
 
-  result = "You throw {}{} while AI throws {}{}. {}".format(
-           player_article,player_choice_name,ai_article,ai_choice_name,player_result
-           )
-  return result
+    player_article = eval(player_choice).article
+    ai_article = eval(ai_choice).article
+    player_choice_name = eval(player_choice).name
+    ai_choice_name = eval(ai_choice).name
 
-
-hazim = Player("Hazim",10)
-print(hazim.name)
-print(hazim.hp)
-print(hazim.win)
-print(hazim.lost)
-print(hazim.power_actions)
-print(hazim.desperate_actions)
-
-hazim + 1
-print(hazim.win)
-print(hazim.lost)
-
-hazim - 1
-print(hazim.win)
-print(hazim.lost)
-
+    result = "\nYou throw {}{} while {} throws {}{}. {}".format(
+            player_article,player_choice_name,ai_name,ai_article,ai_choice_name,player_result
+            )
+    stats = "\n{}'s HP: {} \n{}'s HP: {}\n".format(player.name,player_hp,ai_name,ai_hp)
+    border = "----------------------------------------"
+    print(result)
+    print("\n" + border + stats + border + "\n")
   
+  if player_hp > 0 and ai_hp <= 0:
+    player.win += 1
+    player.stage += 1
+    print("You've won the game!")
+  elif player_hp <= 0 and ai_hp > 0:
+    player.lost += 1
+    print("You've lost the game...")
+  else:
+    print("It's a draw...")
 
+player = Player(player_name())
+emily = Bot("Emily")
+leo = Bot("Leo")
+blitz = Bot("Blitz")
+sayaka = Bot("Sayaka")
 
-
+game()
 
 
   
