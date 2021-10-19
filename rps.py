@@ -108,6 +108,8 @@ scissors = Choose("scissors","paper","rock")
 # Simple rock, paper, scissors game
 choose = ["rock", "paper", "scissors"]
 action = ["strike", "heal", "guard", "sabotage"]
+power_action = ["power strike", "power heal", "power guard", "power sabotage"]
+desperate_action = ["desperate strike", "desperate heal", "desperate guard", "desperate sabotage"]
 # choose_history = {}
 # action_history = {}
 
@@ -178,12 +180,34 @@ def instruction_action():
   header = "Please choose one of the following:\n"
   opt1 = "1. Strike\n"
   opt2 = "2. Heal\n"
-  opt3 = "3. Guard and Counter\n"
+  opt3 = "3. Guard\n"
   opt4 = "4. Sabotage\n"
   opt0 = "0. Help on Actions\n"
 
   instruction_action = "{} {} {} {} {} {}".format(header, opt1, opt2, opt3, opt4, opt0)
   return instruction_action
+
+def instruction_power_action():
+  header = "Please choose one of the following:\n"
+  opt1 = "1. Power Strike\n"
+  opt2 = "2. Power Heal\n"
+  opt3 = "3. Power Guard\n"
+  opt4 = "4. Power Sabotage\n"
+  opt0 = "0. Help on Power Actions\n"
+
+  instruction_power_action = "{} {} {} {} {} {}".format(header, opt1, opt2, opt3, opt4, opt0)
+  return instruction_power_action
+
+def instruction_desperate_action():
+  header = "Please choose one of the following:\n"
+  opt1 = "1. Desperate Strike\n"
+  opt2 = "2. Desperate Heal\n"
+  opt3 = "3. Desperate Guard\n"
+  opt4 = "4. Desperate Sabotage\n"
+  opt0 = "0. Help on Depserate Actions\n"
+
+  instruction_desperate_action = "{} {} {} {} {} {}".format(header, opt1, opt2, opt3, opt4, opt0)
+  return instruction_desperate_action
 
 def player_choose():
   invalid_input = True
@@ -221,13 +245,13 @@ def player_action():
     else:
       if player_action == 0:
         help01 = "1. Strike reduces opponent's HP by 1.\n"
-        help02 = "2. Heal restores your HP by 1.\n"
-        help03 = "3. Guard and Counter has a 50%\ chance of nullifying opponent's \
-          next strike. If the guard is successful, a counter strike will be \
-            performed, which reduces opponent's HP by 1.\n"
+        help02 = "2. Heal restores own HP by 1.\n"
+        help03 = "3. Guard has a 50%\ chance of nullifying opponent's \
+          next strike. If the guard is successful, a counter will be \
+            performed, which reduces opponent's HP by 1. Overwrites any existing Guard stance.\n"
         help04 = "4. Sabotage has a 33%\ chance of failing oppponent's next action. \
-          If the action failed, opponent loses 1 HP as well as Guard and Counter \
-            stance.\n"
+          If the action failed, opponent loses 1 HP as well as any Guard stance. \
+            Overwrites any existing pending sabotage on opponent."
         help_action = "{} {} {} {}".format(help01,help02,help03,help04)
       elif 1 <= player_action <= 4:
         player_action = int(player_action)
@@ -235,12 +259,74 @@ def player_action():
         invalid_input = False
         return player_action
       else:
-        print("Please select the corect action (1, 2, 3, 4, or 0 for help)!\n")
+        print("Please select the correct action (1, 2, 3, 4, or 0 for help)!\n")
 
+def player_power_action():
+  invalid_input = True
+  player_action = None
+  border = "================================================="
+  print(border + "\n" + instruction_power_action())
+
+  while invalid_input == True:
+    try:
+      player_action = int(input("Action No.:  "))
+    except:
+      print("Please select the correct action (1, 2, 3, 4, or 0 for help)!\n")
+    else:
+      if player_action == 0:
+        help01 = "1. Power Strike reduces opponent's HP by 2.\n"
+        help02 = "2. Power Heal restores own HP by 2.\n"
+        help03 = "3. Power Guard has a 80%\ chance of nullifying opponent's \
+          next strike and a counter will be performed, which reduces opponent's \
+            HP by 1. Overwrites any existing Guard stance.\n"
+        help04 = "4. Power Sabotage has a 66%\ chance of failing oppponent's next action. \
+          If the action failed, opponent loses 2 HP as well as any Guard \
+          stance. Overwrites any existing pending sabotage on opponent.\n"
+        help_action = "{} {} {} {}".format(help01,help02,help03,help04)
+      elif 1 <= player_action <= 4:
+        player_action = int(player_action)
+        player_action = action[player_action-1]
+        invalid_input = False
+        return player_action
+      else:
+        print("Please select the correct action (1, 2, 3, 4, or 0 for help)!\n")
+
+def player_desperate_action():
+  invalid_input = True
+  player_action = None
+  border = "================================================="
+  print(border + "\n" + instruction_desperate_action())
+
+  while invalid_input == True:
+    try:
+      player_action = int(input("Action No.:  "))
+    except:
+      print("Please select the correct action (1, 2, 3, 4, or 0 for help)!\n")
+    else:
+      if player_action == 0:
+        help01 = "1. Desperate Strike reduces opponent's HP by 1 and recovers own HP by 1.\n"
+        help02 = "2. Desperate Heal restores own HP by 3, but reduces own HP by 1 for the \
+          next 2 turns.\n"
+        help03 = "3. Desperate Guard nullifies opponent's next strike. If the \
+          guard is successful, a counter strike will be performed, which \
+          reduces opponent's HP by 1. Overwrites any existing Guard stance.\n"
+        help04 = "4. Desperate Sabotage has a 25%\ chance of failing oppponent's next action. \
+          If the action failed, opponent loses all HP but 1 as well as any Guard \
+          stance.\n"
+        help_action = "{} {} {} {}".format(help01,help02,help03,help04)
+      elif 1 <= player_action <= 4:
+        player_action = int(player_action)
+        player_action = action[player_action-1]
+        invalid_input = False
+        return player_action
+      else:
+        print("Please select the correct action (1, 2, 3, 4, or 0 for help)!\n")
 
 def ai_choose():
   ai_choose = random.choice(choose)
   return ai_choose
+
+
 
 def ai_profile():
   if player.stage == 0:
