@@ -68,8 +68,6 @@ class Player:
     self.win = 0
     self.lost = 0
     self.stage = 0
-    self.power_actions = False
-    self.desperate_actions = False
   
   def __add__(self,value):
     self.win += value
@@ -166,21 +164,32 @@ def player_name():
   player_name = input("What is your name? (40 characters max): \n")
   return player_name
 
-def instruction():
+def instruction_choose():
   header = "Please choose one of the following:\n"
   opt1 = "1. Rock\n"
   opt2 = "2. Paper\n"
   opt3 = "3. Scissors\n"
   opt0 = "0. Exit\n"
   
-  instruction = "{} {} {} {} {}".format(header, opt1, opt2, opt3, opt0)
-  return instruction
+  instruction_choose = "{} {} {} {} {}".format(header, opt1, opt2, opt3, opt0)
+  return instruction_choose
+
+def instruction_action():
+  header = "Please choose one of the following:\n"
+  opt1 = "1. Strike\n"
+  opt2 = "2. Heal\n"
+  opt3 = "3. Guard and Counter\n"
+  opt4 = "4. Sabotage\n"
+  opt0 = "0. Help on Actions\n"
+
+  instruction_action = "{} {} {} {} {} {}".format(header, opt1, opt2, opt3, opt4, opt0)
+  return instruction_action
 
 def player_choose():
   invalid_input = True
   player_choose = None
   border = "================================================="
-  print(border + "\n" + instruction())
+  print(border + "\n" + instruction_choose())
 
   while invalid_input == True:
     try:
@@ -197,6 +206,37 @@ def player_choose():
         return player_choose
       else:
         print("Please select the correct option (1, 2, 3, or 0 to exit)!\n")
+
+def player_action():
+  invalid_input = True
+  player_action = None
+  border = "================================================="
+  print(border + "\n" + instruction_action())
+
+  while invalid_input == True:
+    try:
+      player_action = int(input("Action No.:  "))
+    except:
+      print("Please select the correct action (1, 2, 3, 4, or 0 for help)!\n")
+    else:
+      if player_action == 0:
+        help01 = "1. Strike reduces opponent's HP by 1.\n"
+        help02 = "2. Heal restores your HP by 1.\n"
+        help03 = "3. Guard and Counter has a 50%\ chance of nullifying opponent's \
+          next strike. If the guard is successful, a counter strike will be \
+            performed, which reduces opponent's HP by 1.\n"
+        help04 = "4. Sabotage has a 33%\ chance of failing oppponent's next action. \
+          If the action failed, opponent loses 1 HP as well as Guard and Counter \
+            stance.\n"
+        help_action = "{} {} {} {}".format(help01,help02,help03,help04)
+      elif 1 <= player_action <= 4:
+        player_action = int(player_action)
+        player_action = action[player_action-1]
+        invalid_input = False
+        return player_action
+      else:
+        print("Please select the corect action (1, 2, 3, 4, or 0 for help)!\n")
+
 
 def ai_choose():
   ai_choose = random.choice(choose)
@@ -226,14 +266,33 @@ def game():
   # global action_history
   player_stage = player.stage
   player_hp = player.hp
-  ai_hp, ai_name = ai_profile()[0], ai_profile()[1]
+  ai_hp = ai_profile()[0]
+  ai_name = ai_profile()[1]
   player_score = 0
   ai_score = 0
+  player_power_actions = False
+  ai_power_actions = False
+  player_desperate_actions = False
+  ai_desperate_actions = False
+  player_power_actions_count = 0
+  ai_power_actions_count = 0
+  player_desperate_actions_count = 0
+  ai_desperate_actions_count = 0
 
   print()
   ai_introduction()
 
   while player_hp > 0 and ai_hp > 0:
+
+    if player_score % 5 == 0:
+      player_power_actions = True
+    elif player_hp <= 2:
+      player_desperate_actions = True 
+    if ai_score % 5 == 0:
+      ai_power_actions = True
+    elif ai_hp <= 2:
+      ai_desperate_actions = True
+    
     player_choice = player_choose()
     ai_choice = ai_choose()
     player_result = ""
@@ -241,7 +300,6 @@ def game():
 
     if eval(player_choice).win == ai_choice:
       player_score += 1
-      ai_hp -= 1
       player_result = "You won!"
     elif eval(player_choice).lose == ai_choice:
       ai_score += 1
