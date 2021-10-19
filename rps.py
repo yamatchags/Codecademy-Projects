@@ -34,7 +34,11 @@ Desperate Defend = Guard against opponent's next strike, and counters the enemy 
 Desperate Sabotage = The next time opponent wins, that opponent has 66% chance of failing to perform the action. If the action failed, opponent's HP will be reduced to 1.
 
 You and your opponent starts with 5 HP.
+'''
+'''
+ROADMAP:
 
+1. Enable actions
 '''
 
 #######################################
@@ -117,47 +121,91 @@ action = ["strike", "heal", "guard", "sabotage"]
 #                GAME                 #
 #######################################
 
+# Inquires user to input their name
 def player_name():
   player_name = input("What is your name? (40 characters max): \n")
   return player_name
 
 def instruction():
-  det = "Please choose one of the following (enter the option number): \n"
-  opt1 = "1. Rock \n"
-  opt2 = "2. Paper \n"
-  opt3 = "3. Scissors \n"
+  header = "Please choose one of the following:\n"
+  opt1 = "1. Rock\n"
+  opt2 = "2. Paper\n"
+  opt3 = "3. Scissors\n"
+  opt0 = "0. Exit\n"
   
-  instruction = "{} {} {} {}".format(det, opt1, opt2, opt3)
+  instruction = "{} {} {} {} {}".format(header, opt1, opt2, opt3, opt0)
   return instruction
 
+# This function exits the game
+def exit_game():
+  invalid_input = True
+
+  while invalid_input == True:
+    user_input = input("Are you sure you want to exit? (Y/N):  ")
+    if user_input.strip().upper() == "Y":
+      print("You walked away and forfeited the game.")
+      invalid_input = False
+      exit()
+    elif user_input.strip().upper() == "N":
+      print()
+      invalid_input = False
+    else:
+      print("Please select Y (yes) or N (no)!")
+
+def continue_game():
+  invalid_input = True
+
+  while invalid_input == True:
+    user_input = input("Would you like to continue? (Y/N):  ")
+    if user_input.strip().upper() == "Y":
+      game()
+    elif user_input.strip().upper() == "N":
+      exit()
+    else:
+      print("Please select Y (yes) or N (no)!")
+
 def player_choose():
-  player_choose = int(input(instruction()))
-  player_choose = choose[player_choose-1]
-  return player_choose
+  invalid_input = True
+  player_choose = None
+  border = "================================================="
+  print(border + "\n" + instruction())
+
+  while invalid_input == True:
+    try:
+      player_choose = int(input("Option No.:  "))
+    except:
+      print("Please select the correct option (1, 2, 3, or 0 to exit)!\n")
+    else:
+      if player_choose == 0:
+        exit_game()
+      elif 1 <= player_choose <= 3:
+        player_choose = int(player_choose)
+        player_choose = choose[player_choose-1]
+        invalid_input = False
+        return player_choose
+      else:
+        print("Please select the correct option (1, 2, 3, or 0 to exit)!\n")
 
 def ai_choose():
   ai_choose = random.choice(choose)
   return ai_choose
+
+def ai_profile():
+  if player.stage == 0:
+    return emily.hp, emily.name
+  elif player.stage == 1:
+    return leo.hp, leo.name
+  elif player.stage == 2:
+    return blitz.hp, blitz.name
+  else:
+    return sayaka.hp, sayaka.name
 
 def game():
   # global choose_history
   # global action_history
   player_stage = player.stage
   player_hp = player.hp
-  
-  if player.stage == 0:
-    ai_hp = emily.hp
-    ai_name = emily.name
-  elif player.stage == 1:
-    ai_hp = leo.hp
-    ai_name = leo.name
-  elif player.stage == 2:
-    ai_hp = blitz.hp
-    ai_name = blitz.name
-  else:
-    ai_hp = sayaka.hp
-    ai_name = sayaka.name
-
+  ai_hp, ai_name = ai_profile()
   player_score = 0
   ai_score = 0
 
@@ -201,9 +249,11 @@ def game():
     print("You've lost the game...")
   else:
     print("It's a draw...")
+  
+  continue_game()
 
-player = Player(player_name())
-emily = Bot("Emily")
+player = Player(player_name(),3)
+emily = Bot("Emily",3)
 leo = Bot("Leo")
 blitz = Bot("Blitz")
 sayaka = Bot("Sayaka")
