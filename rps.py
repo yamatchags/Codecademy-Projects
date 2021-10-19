@@ -94,16 +94,10 @@ class Player:
 
   #   return action_history
 
-
-
-
 class Bot(Player):
 
   def __init__(self,name,hp=10):
     super().__init__(name,hp)
-
-  def introduction(self,intro):
-    self.intro = intro
 
 #######################################
 #            INITIALIZE               #
@@ -119,24 +113,18 @@ action = ["strike", "heal", "guard", "sabotage"]
 # choose_history = {}
 # action_history = {}
 
+
+
+
+
+
 #######################################
-#                GAME                 #
+#         UTILITY FUNCTIONS           #
 #######################################
 
-# Inquires user to input their name
-def player_name():
-  player_name = input("What is your name? (40 characters max): \n")
-  return player_name
-
-def instruction():
-  header = "Please choose one of the following:\n"
-  opt1 = "1. Rock\n"
-  opt2 = "2. Paper\n"
-  opt3 = "3. Scissors\n"
-  opt0 = "0. Exit\n"
-  
-  instruction = "{} {} {} {} {}".format(header, opt1, opt2, opt3, opt0)
-  return instruction
+def pause():
+  pause = "(Press Enter to continue...)\n"
+  return input(pause)
 
 # This function exits the game
 def exit_game():
@@ -168,9 +156,25 @@ def continue_game():
     else:
       print("Please select Y (yes) or N (no)!")
 
-def pause():
-  pause = "(Press Enter to continue...)\n"
-  return input(pause)
+
+#######################################
+#         IN-GAME FUNCTIONS           #
+#######################################
+
+# Inquires user to input their name
+def player_name():
+  player_name = input("What is your name? (40 characters max): \n")
+  return player_name
+
+def instruction():
+  header = "Please choose one of the following:\n"
+  opt1 = "1. Rock\n"
+  opt2 = "2. Paper\n"
+  opt3 = "3. Scissors\n"
+  opt0 = "0. Exit\n"
+  
+  instruction = "{} {} {} {} {}".format(header, opt1, opt2, opt3, opt0)
+  return instruction
 
 def player_choose():
   invalid_input = True
@@ -273,11 +277,18 @@ def game():
   
   continue_game()
 
+
+#######################################
+#         INITIALIZE PLAYERS          #
+#######################################
+
+
 player = Player(player_name(),3)
 emily = Bot("Emily",3)
 leo = Bot("Leo")
 blitz = Bot("Blitz")
 sayaka = Bot("Sayaka")
+
 
 game()
 
