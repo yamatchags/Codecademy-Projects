@@ -102,6 +102,8 @@ class Bot(Player):
   def __init__(self,name,hp=10):
     super().__init__(name,hp)
 
+  def introduction(self,intro):
+    self.intro = intro
 
 #######################################
 #            INITIALIZE               #
@@ -158,11 +160,17 @@ def continue_game():
   while invalid_input == True:
     user_input = input("Would you like to continue? (Y/N):  ")
     if user_input.strip().upper() == "Y":
+      invalid_input = False
       game()
     elif user_input.strip().upper() == "N":
+      invalid_input = False
       exit()
     else:
       print("Please select Y (yes) or N (no)!")
+
+def pause():
+  pause = "(Press Enter to continue...)\n"
+  return input(pause)
 
 def player_choose():
   invalid_input = True
@@ -192,22 +200,34 @@ def ai_choose():
 
 def ai_profile():
   if player.stage == 0:
-    return emily.hp, emily.name
+    return [emily.hp, emily.name]
   elif player.stage == 1:
-    return leo.hp, leo.name
+    return [leo.hp, leo.name]
   elif player.stage == 2:
-    return blitz.hp, blitz.name
+    return [blitz.hp, blitz.name]
   else:
-    return sayaka.hp, sayaka.name
+    return [sayaka.hp, sayaka.name]
+
+def ai_introduction():
+  ai_name = ai_profile()[1]
+
+  if ai_name == "Emily":
+    intro1 = "Emily: Hello and nice to meet you, {}!".format(player.name)
+    intro2 = "Emily: Shall we begin?"
+    print(intro1) ; pause()
+    print(intro2) ; pause()
 
 def game():
   # global choose_history
   # global action_history
   player_stage = player.stage
   player_hp = player.hp
-  ai_hp, ai_name = ai_profile()
+  ai_hp, ai_name = ai_profile()[0], ai_profile()[1]
   player_score = 0
   ai_score = 0
+
+  print()
+  ai_introduction()
 
   while player_hp > 0 and ai_hp > 0:
     player_choice = player_choose()
@@ -239,6 +259,7 @@ def game():
     border = "----------------------------------------"
     print(result)
     print("\n" + border + stats + border + "\n")
+    pause()
   
   if player_hp > 0 and ai_hp <= 0:
     player.win += 1
